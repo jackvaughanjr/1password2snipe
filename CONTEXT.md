@@ -42,7 +42,7 @@ environment variable.
 | Method | Path | Purpose |
 |--------|------|---------|
 | GET | `/scim/v2/ServiceProviderConfig` | Connectivity probe |
-| GET | `/scim/v2/Users?filter=active+eq+true&startIndex=N&count=100` | Paginated active member list |
+| GET | `/scim/v2/Users?startIndex=N&count=100` | Paginated member list (filtered client-side on `active`) |
 
 ### Pagination
 
@@ -158,17 +158,19 @@ currently holds a seat will be checked in on the next run.
 
 ### Suspended / inactive users
 
-Suspended members have `active: false` in the SCIM response. The client filters
-with `?filter=active+eq+true` at the server side. The client also filters locally
-on `u.Active == true` as a belt-and-suspenders check, since some SCIM bridge
-versions do not enforce server-side filters.
+Suspended members have `active: false` in the SCIM response. The client paginates
+through all users and filters locally on `u.Active == true`. Server-side filtering
+via the SCIM `filter` query parameter is not used — the 1Password SCIM bridge does
+not reliably support it and returns 400 for filter queries.
 
 ### SCIM bridge URL
 
-The SCIM bridge URL is customer-managed. It must be the root of the bridge
-service (e.g. `https://scim.example.com`), not the SCIM base path itself — the
-client appends `/scim/v2` internally. A trailing slash in the configured URL is
-stripped.
+The client accepts either the server root (`https://your-bridge.example.com`)
+or the full SCIM base path (`https://provisioning.1password.com/scim/v2`).
+Any trailing `/scim/v2` suffix is stripped on construction so the client always
+works from the server root and appends `/scim/v2` itself. Trailing slashes are
+also stripped. The 1Password cloud SCIM bridge URL is
+`https://provisioning.1password.com/scim/v2`.
 
 ### First sync — no license yet
 

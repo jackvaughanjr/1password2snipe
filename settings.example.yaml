@@ -6,8 +6,9 @@
 # See CONTEXT.md for the full list of env var overrides.
 
 onepassword:
-  # Base URL of your 1Password SCIM bridge (the server root, without /scim/v2).
-  # Example: https://your-scim-bridge.example.com
+  # Base URL of your 1Password SCIM bridge.
+  # Either the server root (https://your-scim-bridge.example.com) or the full
+  # SCIM base path (https://provisioning.1password.com/scim/v2) — both work.
   # Override: OP_SCIM_URL
   url: "https://your-scim-bridge.example.com"
 

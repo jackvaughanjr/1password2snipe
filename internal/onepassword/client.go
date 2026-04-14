@@ -16,12 +16,16 @@ type Client struct {
 	httpClient *http.Client
 }
 
-// NewClient returns a new Client. baseURL is the root of the SCIM bridge
-// (e.g. "https://your-scim-bridge.example.com"); the /scim/v2 path prefix
-// is appended by the client internally.
+// NewClient returns a new Client. baseURL may be either the server root
+// (e.g. "https://your-bridge.example.com") or the full SCIM base
+// (e.g. "https://provisioning.1password.com/scim/v2"); both forms are
+// normalised to the server root and the /scim/v2 prefix is appended
+// by the client internally.
 func NewClient(baseURL, token string) *Client {
+	base := strings.TrimRight(baseURL, "/")
+	base = strings.TrimSuffix(base, "/scim/v2")
 	return &Client{
-		baseURL: strings.TrimRight(baseURL, "/"),
+		baseURL: base,
 		token:   token,
 		httpClient: &http.Client{
 			Timeout: 30 * time.Second,
@@ -81,16 +85,16 @@ func (c *Client) Ping(ctx context.Context) error {
 }
 
 // ListActiveUsers returns all active (non-suspended) members from the 1Password
-// SCIM bridge. It uses server-side filtering (`active eq true`) and additionally
-// filters locally on u.Active as a belt-and-suspenders check against bridge
-// versions that do not enforce server-side filters.
+// SCIM bridge. It paginates through all users and filters locally on u.Active;
+// server-side filtering is intentionally omitted because the 1Password SCIM
+// bridge does not reliably support the SCIM filter query parameter.
 func (c *Client) ListActiveUsers(ctx context.Context) ([]User, error) {
 	var all []User
 	startIndex := 1
 	pageSize := 100
 
 	for {
-		path := fmt.Sprintf("/scim/v2/Users?filter=active+eq+true&startIndex=%d&count=%d", startIndex, pageSize)
+		path := fmt.Sprintf("/scim/v2/Users?startIndex=%d&count=%d", startIndex, pageSize)
 		var page listResponse
 		if err := c.get(ctx, path, &page); err != nil {
 			return nil, err
