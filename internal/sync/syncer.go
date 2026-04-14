@@ -125,6 +125,17 @@ func (s *Syncer) Run(ctx context.Context, emailFilter string) (Result, error) {
 		}
 	}
 
+	// 7.5. Refresh the license so FreeSeatsCount is accurate before ghost detection.
+	// Snipe-IT's POST (create) response returns free_seats_count: 0 regardless of
+	// the seat count; a fresh GET gives the real value.
+	if !s.cfg.DryRun && lic.ID != 0 {
+		lic, err = s.snipe.FindLicenseByID(ctx, lic.ID)
+		if err != nil {
+			return result, fmt.Errorf("refreshing license: %w", err)
+		}
+		slog.Debug("license refreshed", "id", lic.ID, "seats", lic.Seats, "free", lic.FreeSeatsCount)
+	}
+
 	// 8. Load current seat assignments.
 	// Dry-run with a synthetic license (id=0) skips the API call.
 	// In production, id=0 means something went wrong — fail fast.
