@@ -19,6 +19,11 @@ type Config struct {
 	IncludeGuests bool
 	LicenseName       string
 	LicenseCategoryID int
+	// LicenseSeats is the total purchased seat count to set on the Snipe-IT
+	// license. 1Password does not expose purchased seat count via any API, so
+	// this must be configured manually. If 0, active member count is used as
+	// the floor. Seats are never shrunk automatically.
+	LicenseSeats int
 	// ManufacturerID is optional. If 0, auto find/create "1Password".
 	ManufacturerID int
 	// SupplierID is optional. If 0, no supplier is set on the license.
@@ -92,22 +97,34 @@ func (s *Syncer) Run(ctx context.Context, emailFilter string) (Result, error) {
 		manufacturerID = mfr.ID
 	}
 
-	// 6. Find or create the license.
+	// 6. Resolve target seat count.
+	// Priority: snipe_it.license_seats config → active member count (floor).
+	// 1Password does not expose purchased seat count via any API.
+	activeCount := len(activeEmails)
+	targetSeats := s.cfg.LicenseSeats
+	if targetSeats == 0 {
+		targetSeats = activeCount
+	} else if targetSeats < activeCount {
+		slog.Warn("license_seats is less than active member count; using active count",
+			"license_seats", targetSeats, "active", activeCount)
+		targetSeats = activeCount
+	}
+
+	// Find or create the license.
 	// Dry-run: find only; synthesize placeholder if not found (id=0).
 	slog.Info("finding or creating license", "name", s.cfg.LicenseName)
 	var lic *snipeit.License
-	activeCount := len(activeEmails)
 	if s.cfg.DryRun {
 		lic, err = s.snipe.FindLicenseByName(ctx, s.cfg.LicenseName)
 		if err != nil {
 			return result, err
 		}
 		if lic == nil {
-			slog.Info("[dry-run] license not found; would be created", "name", s.cfg.LicenseName, "seats", activeCount)
-			lic = &snipeit.License{Name: s.cfg.LicenseName, Seats: activeCount}
+			slog.Info("[dry-run] license not found; would be created", "name", s.cfg.LicenseName, "seats", targetSeats)
+			lic = &snipeit.License{Name: s.cfg.LicenseName, Seats: targetSeats}
 		}
 	} else {
-		lic, err = s.snipe.FindOrCreateLicense(ctx, s.cfg.LicenseName, activeCount, s.cfg.LicenseCategoryID, manufacturerID, s.cfg.SupplierID)
+		lic, err = s.snipe.FindOrCreateLicense(ctx, s.cfg.LicenseName, targetSeats, s.cfg.LicenseCategoryID, manufacturerID, s.cfg.SupplierID)
 		if err != nil {
 			return result, err
 		}
@@ -115,10 +132,10 @@ func (s *Syncer) Run(ctx context.Context, emailFilter string) (Result, error) {
 	slog.Info("license resolved", "id", lic.ID, "seats", lic.Seats, "free", lic.FreeSeatsCount)
 
 	// 7. Expand seats if needed (never shrink automatically).
-	if activeCount > lic.Seats {
+	if targetSeats > lic.Seats {
 		slog.Info("expanding license seats", "current", lic.Seats, "needed", activeCount)
 		if !s.cfg.DryRun {
-			lic, err = s.snipe.UpdateLicenseSeats(ctx, lic.ID, activeCount)
+			lic, err = s.snipe.UpdateLicenseSeats(ctx, lic.ID, targetSeats)
 			if err != nil {
 				return result, err
 			}

@@ -83,6 +83,7 @@ snipe_it:
   api_key: ""                                       # SNIPE_TOKEN
   license_name: "1Password Business"
   license_category_id: 0                            # required; find at Admin → Categories
+  license_seats: 0                                  # optional; 0 = use active member count as floor
   license_manufacturer_id: 0                        # optional; 0 = auto find/create "1Password"
   license_supplier_id: 0                            # optional; 0 = omit
 
@@ -171,6 +172,14 @@ Any trailing `/scim/v2` suffix is stripped on construction so the client always
 works from the server root and appends `/scim/v2` itself. Trailing slashes are
 also stripped. The 1Password cloud SCIM bridge URL is
 `https://provisioning.1password.com/scim/v2`.
+
+### Purchased seat count not available via API
+
+1Password does not expose the purchased/licensed seat count through any API —
+not SCIM, Events API, Connect API, or the Partnership API. The web UI shows it
+at 1Password.com → Billing and Seats → Usage, but there is no programmatic
+equivalent. Set `snipe_it.license_seats` manually to reflect your purchased seat
+count. If unset, the Snipe-IT license tracks active member count as a floor.
 
 ### First sync — no license yet
 

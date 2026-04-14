@@ -39,6 +39,13 @@ snipe_it:
   # Find IDs at: Admin → Categories, or via GET /api/v1/categories.
   license_category_id: 0
 
+  # Optional: total purchased seat count for the 1Password Business license.
+  # 1Password does not expose this via any API, so set it manually if you want
+  # Snipe-IT to reflect your actual purchased seats rather than just active users.
+  # If 0, the active member count is used as the floor. Seats are never shrunk
+  # automatically; set this if your purchased count exceeds your current active users.
+  license_seats: 0
+
   # Optional: Snipe-IT manufacturer ID for "1Password".
   # If 0, the manufacturer is found or created automatically as "1Password".
   license_manufacturer_id: 0

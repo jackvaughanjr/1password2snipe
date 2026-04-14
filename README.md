@@ -50,6 +50,7 @@ snipe_it:
   api_key: "your-snipe-it-api-key"
   license_name: "1Password Business"
   license_category_id: 5   # required — find at Admin → Categories
+  license_seats: 50         # optional — your purchased seat count (1Password has no API for this)
 ```
 
 All values can be set via environment variables instead:

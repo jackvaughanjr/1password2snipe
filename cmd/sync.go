@@ -71,6 +71,7 @@ func runSync(cmd *cobra.Command, args []string) error {
 		IncludeGuests:     viper.GetBool("onepassword.include_guests"),
 		LicenseName:       viper.GetString("snipe_it.license_name"),
 		LicenseCategoryID: categoryID,
+		LicenseSeats:      viper.GetInt("snipe_it.license_seats"),
 		ManufacturerID:    viper.GetInt("snipe_it.license_manufacturer_id"),
 		SupplierID:        viper.GetInt("snipe_it.license_supplier_id"),
 	}
