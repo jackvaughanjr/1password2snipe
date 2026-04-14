@@ -1,0 +1,66 @@
+# 1password2snipe configuration
+# Copy this file to settings.yaml and fill in your values.
+# settings.yaml is gitignored and should never be committed.
+#
+# All values can be overridden with environment variables.
+# See CONTEXT.md for the full list of env var overrides.
+
+onepassword:
+  # Base URL of your 1Password SCIM bridge (the server root, without /scim/v2).
+  # Example: https://your-scim-bridge.example.com
+  # Override: OP_SCIM_URL
+  url: "https://your-scim-bridge.example.com"
+
+  # Bearer token issued from 1Password Business Admin Console → Integrations → SCIM Bridge.
+  # Override: OP_SCIM_TOKEN
+  api_token: ""
+
+  # Whether to include Guest-role members in the sync.
+  # Guests have limited vault access and are billed separately from full members.
+  # Default: false (guests are excluded; any previously-assigned guest seats are checked in).
+  include_guests: false
+
+snipe_it:
+  # Base URL of your Snipe-IT instance.
+  # Override: SNIPE_URL
+  url: "https://your-snipe-it-instance.example.com"
+
+  # Snipe-IT API key with license management permissions.
+  # Generate one at: Admin → API Keys
+  # Override: SNIPE_TOKEN
+  api_key: ""
+
+  # Name of the license record to assign seats to.
+  # Created automatically on first run if it does not exist.
+  license_name: "1Password Business"
+
+  # Snipe-IT category ID to assign to the license when created. Required.
+  # Find IDs at: Admin → Categories, or via GET /api/v1/categories.
+  license_category_id: 0
+
+  # Optional: Snipe-IT manufacturer ID for "1Password".
+  # If 0, the manufacturer is found or created automatically as "1Password".
+  license_manufacturer_id: 0
+
+  # Optional: Snipe-IT supplier ID.
+  # If 0, no supplier is set on the license.
+  license_supplier_id: 0
+
+sync:
+  # Simulate a full sync without making any changes.
+  # Overridden by the --dry-run flag.
+  dry_run: false
+
+  # Re-sync seat notes even if they appear up to date.
+  # Overridden by the --force flag.
+  force: false
+
+  # Snipe-IT API rate limit in milliseconds between requests.
+  # 500ms = 2 req/s. Increase if you encounter 429 errors.
+  rate_limit_ms: 500
+
+slack:
+  # Incoming webhook URL for Slack notifications.
+  # Optional. If omitted, all notifications are silently skipped.
+  # Override: SLACK_WEBHOOK
+  webhook_url: ""
