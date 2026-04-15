@@ -6,6 +6,7 @@
   "version": "1.1.0",
   "min_snipemgr": "0.1.0",
   "tags": ["saas", "identity", "password-manager"],
+  "category": "Identity & Access Management",
   "config_schema": [
     {
       "key": "onepassword.url",
