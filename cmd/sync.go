@@ -59,7 +59,11 @@ func runSync(cmd *cobra.Command, args []string) error {
 	}
 
 	opClient := onepassword.NewClient(opURL, opToken)
-	snipeClient := snipeit.NewClient(snipeURL, snipeKey)
+	rateLimitMs := viper.GetInt("sync.rate_limit_ms")
+	if rateLimitMs <= 0 {
+		rateLimitMs = 500
+	}
+	snipeClient := snipeit.NewClient(snipeURL, snipeKey, rateLimitMs)
 
 	emailFilter, _ := cmd.Flags().GetString("email")
 	noSlack, _ := cmd.Flags().GetBool("no-slack")

@@ -68,6 +68,7 @@ func initConfig() {
 	_ = viper.BindEnv("snipe_it.url", "SNIPE_URL")
 	_ = viper.BindEnv("snipe_it.api_key", "SNIPE_TOKEN")
 	_ = viper.BindEnv("slack.webhook_url", "SLACK_WEBHOOK")
+	_ = viper.BindEnv("sync.rate_limit_ms", "SNIPE_RATE_LIMIT_MS")
 
 	if err := viper.ReadInConfig(); err != nil {
 		if _, ok := err.(viper.ConfigFileNotFoundError); !ok {

@@ -9,6 +9,8 @@ each one to a seat on a named Snipe-IT software license. Seats are checked out w
 a user becomes active and checked in when they are suspended or removed. The seat
 `notes` field records the member's current 1Password role(s) (e.g. `roles: Administrator`).
 
+> Part of the [\*2snipe](https://github.com/jackvaughanjr?tab=repositories&q=2snipe) integration family, inspired by [CampusTech](https://github.com/CampusTech)'s Snipe-IT integrations.
+
 ## Requirements
 
 - 1Password Business account with SCIM Bridge deployed
@@ -132,7 +134,8 @@ completion, failures, and unmatched users. Suppressed in dry-run and with `--no-
 
 | Version | Key changes |
 |---------|-------------|
-| v1.0.0 | Initial scaffold — 1Password SCIM → Snipe-IT license seat sync |
-| v1.0.1 | Fixed SCIM URL normalization; dropped unreliable server-side filter |
-| v1.0.2 | Fixed ghost cleanup consuming all free seats on a newly created license |
+| v1.2.0 | Make Snipe-IT API rate limit configurable via `sync.rate_limit_ms` and `SNIPE_RATE_LIMIT_MS` env var |
 | v1.1.0 | Added `snipe_it.license_seats` override for purchased seat count |
+| v1.0.2 | Fixed ghost cleanup consuming all free seats on a newly created license |
+| v1.0.1 | Fixed SCIM URL normalization; dropped unreliable server-side filter |
+| v1.0.0 | Initial scaffold — 1Password SCIM → Snipe-IT license seat sync |

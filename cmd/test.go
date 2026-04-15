@@ -40,7 +40,11 @@ func runTest(cmd *cobra.Command, args []string) error {
 	}
 
 	opClient := onepassword.NewClient(opURL, opToken)
-	snipeClient := snipeit.NewClient(snipeURL, snipeKey)
+	rateLimitMs := viper.GetInt("sync.rate_limit_ms")
+	if rateLimitMs <= 0 {
+		rateLimitMs = 500
+	}
+	snipeClient := snipeit.NewClient(snipeURL, snipeKey, rateLimitMs)
 
 	ctx := context.Background()
 
