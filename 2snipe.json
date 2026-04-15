@@ -1,0 +1,78 @@
+{
+  "$schema": "https://raw.githubusercontent.com/jackvaughanjr/2snipe-manager/main/2snipe.schema.json",
+  "name": "1password2snipe",
+  "display_name": "1Password",
+  "description": "Sync 1Password Business members to Snipe-IT license seats",
+  "version": "1.1.0",
+  "min_snipemgr": "0.1.0",
+  "tags": ["saas", "identity", "password-manager"],
+  "config_schema": [
+    {
+      "key": "onepassword.url",
+      "label": "1Password SCIM Bridge URL",
+      "secret": false,
+      "required": true,
+      "hint": "e.g. https://your-scim-bridge.example.com"
+    },
+    {
+      "key": "onepassword.api_token",
+      "label": "1Password SCIM Bearer Token",
+      "secret": true,
+      "required": true,
+      "hint": "Admin Console → Integrations → SCIM Bridge"
+    },
+    {
+      "key": "snipe_it.url",
+      "label": "Snipe-IT URL",
+      "secret": false,
+      "required": true,
+      "hint": "e.g. https://snipe.example.com"
+    },
+    {
+      "key": "snipe_it.api_key",
+      "label": "Snipe-IT API Key",
+      "secret": true,
+      "required": true,
+      "hint": "Admin → API Keys in your Snipe-IT instance"
+    },
+    {
+      "key": "snipe_it.license_category_id",
+      "label": "Snipe-IT License Category ID",
+      "secret": false,
+      "required": true,
+      "hint": "Find at Admin → Categories (integer ID)"
+    },
+    {
+      "key": "snipe_it.license_name",
+      "label": "Snipe-IT License Name",
+      "secret": false,
+      "required": false,
+      "default": "1Password Business",
+      "hint": "Name of the license record in Snipe-IT; created automatically on first run"
+    },
+    {
+      "key": "onepassword.include_guests",
+      "label": "Include Guests",
+      "secret": false,
+      "required": false,
+      "default": "false",
+      "hint": "Sync Guest-role members (billed separately from full members)"
+    },
+    {
+      "key": "slack.webhook_url",
+      "label": "Slack Webhook URL",
+      "secret": true,
+      "required": false,
+      "hint": "Optional. Incoming webhook for sync notifications"
+    }
+  ],
+  "shared_config": ["snipe_it"],
+  "commands": {
+    "sync": true,
+    "test": true
+  },
+  "releases": {
+    "github_releases": true,
+    "asset_pattern": "1password2snipe_{os}_{arch}"
+  }
+}
