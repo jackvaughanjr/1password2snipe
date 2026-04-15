@@ -74,6 +74,6 @@
   },
   "releases": {
     "github_releases": true,
-    "asset_pattern": "1password2snipe_{os}_{arch}"
+    "asset_pattern": "1password2snipe-{os}-{arch}"
   }
 }
