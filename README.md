@@ -1,5 +1,7 @@
 # 1password2snipe
 
+[![Latest Release](https://img.shields.io/github/v/release/jackvaughanjr/1password2snipe)](https://github.com/jackvaughanjr/1password2snipe/releases/latest) [![Go Version](https://img.shields.io/github/go-mod/go-version/jackvaughanjr/1password2snipe)](go.mod) [![License](https://img.shields.io/github/license/jackvaughanjr/1password2snipe)](LICENSE) [![Build](https://github.com/jackvaughanjr/1password2snipe/actions/workflows/release.yml/badge.svg)](https://github.com/jackvaughanjr/1password2snipe/actions/workflows/release.yml) [![Go Report Card](https://goreportcard.com/badge/github.com/jackvaughanjr/1password2snipe)](https://goreportcard.com/report/github.com/jackvaughanjr/1password2snipe) [![Downloads](https://img.shields.io/github/downloads/jackvaughanjr/1password2snipe/total)](https://github.com/jackvaughanjr/1password2snipe/releases)
+
 Syncs active 1Password Business members into Snipe-IT as license seat assignments.
 
 Reads all active (non-suspended) members from your 1Password SCIM Bridge and maps
