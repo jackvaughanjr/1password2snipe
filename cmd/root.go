@@ -63,11 +63,11 @@ func initConfig() {
 	viper.SetConfigFile(cfgFile)
 	viper.SetConfigType("yaml")
 
-	viper.BindEnv("onepassword.url", "OP_SCIM_URL")
-	viper.BindEnv("onepassword.api_token", "OP_SCIM_TOKEN")
-	viper.BindEnv("snipe_it.url", "SNIPE_URL")
-	viper.BindEnv("snipe_it.api_key", "SNIPE_TOKEN")
-	viper.BindEnv("slack.webhook_url", "SLACK_WEBHOOK")
+	_ = viper.BindEnv("onepassword.url", "OP_SCIM_URL")
+	_ = viper.BindEnv("onepassword.api_token", "OP_SCIM_TOKEN")
+	_ = viper.BindEnv("snipe_it.url", "SNIPE_URL")
+	_ = viper.BindEnv("snipe_it.api_key", "SNIPE_TOKEN")
+	_ = viper.BindEnv("slack.webhook_url", "SLACK_WEBHOOK")
 
 	if err := viper.ReadInConfig(); err != nil {
 		if _, ok := err.(viper.ConfigFileNotFoundError); !ok {
