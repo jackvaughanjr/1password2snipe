@@ -125,3 +125,12 @@ All values can be set via environment variables instead:
 
 Set `slack.webhook_url` (or `SLACK_WEBHOOK`) to receive notifications on sync
 completion, failures, and unmatched users. Suppressed in dry-run and with `--no-slack`.
+
+## Version History
+
+| Version | Key changes |
+|---------|-------------|
+| v1.0.0 | Initial scaffold — 1Password SCIM → Snipe-IT license seat sync |
+| v1.0.1 | Fixed SCIM URL normalization; dropped unreliable server-side filter |
+| v1.0.2 | Fixed ghost cleanup consuming all free seats on a newly created license |
+| v1.1.0 | Added `snipe_it.license_seats` override for purchased seat count |
