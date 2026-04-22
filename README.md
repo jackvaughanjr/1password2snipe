@@ -45,22 +45,22 @@ Copy `settings.example.yaml` to `settings.yaml` and fill in your values:
 
 ```yaml
 onepassword:
-  url: "https://your-scim-bridge.example.com"
-  api_token: "your-scim-bearer-token"
-  include_guests: false   # set true to also sync Guest-role members
+    url: "https://your-scim-bridge.example.com"
+    api_token: "your-scim-bearer-token"
+    include_guests: false   # set true to also sync Guest-role members
 
 snipe_it:
-  url: "https://your-snipe-it-instance.example.com"
-  api_key: "your-snipe-it-api-key"
-  license_name: "1Password Business"
-  license_category_id: 5   # required — find at Admin → Categories
-  license_seats: 50         # optional — your purchased seat count (1Password has no API for this)
+    url: "https://your-snipe-it-instance.example.com"
+        api_key: "your-snipe-it-api-key"
+        license_name: "1Password Business"
+        license_category_id: 5   # required — find at Admin → Categories
+        license_seats: 50         # optional — your purchased seat count (1Password has no API for this)
 ```
 
 All values can be set via environment variables instead:
 
 | Variable | Config key |
-|---|---|
+| --- | --- |
 | `OP_SCIM_URL` | `onepassword.url` |
 | `OP_SCIM_TOKEN` | `onepassword.api_token` |
 | `SNIPE_URL` | `snipe_it.url` |
@@ -96,7 +96,7 @@ All values can be set via environment variables instead:
 ## Global flags
 
 | Flag | Description |
-|---|---|
+| --- | --- |
 | `--config` | Path to config file (default: `settings.yaml`) |
 | `-v, --verbose` | INFO-level logging |
 | `-d, --debug` | DEBUG-level logging |
@@ -118,7 +118,7 @@ All values can be set via environment variables instead:
 1Password Business has five member types recorded in seat notes:
 
 | Role | Description |
-|---|---|
+| --- | --- |
 | `OWNER` | Account owner — full control |
 | `ADMIN` | Administrator — can manage members and vaults |
 | `MEMBER` | Standard member |
@@ -130,43 +130,15 @@ All values can be set via environment variables instead:
 Set `slack.webhook_url` (or `SLACK_WEBHOOK`) to receive notifications on sync
 completion, failures, and unmatched users. Suppressed in dry-run and with `--no-slack`.
 
-## Running with snipemgr (automated scheduling)
+## Building a container image
 
-`1password2snipe` can be scheduled via [snipemgr](https://github.com/jackvaughanjr/2snipe-manager), which manages installation, secret storage (GCP Secret Manager), and Cloud Run Job scheduling across all `*2snipe` integrations. A `Dockerfile` is included in this repo.
+A `Dockerfile` is included for containerized deployments. To build locally:
 
-Build and push the container image to Artifact Registry — choose one method:
-
-**Option A — Docker** (requires Docker installed and running):
 ```bash
-gcloud auth configure-docker YOUR_REGION-docker.pkg.dev
-docker build -t YOUR_REGION-docker.pkg.dev/YOUR_PROJECT/snipe-integrations/1password2snipe:latest .
-docker push YOUR_REGION-docker.pkg.dev/YOUR_PROJECT/snipe-integrations/1password2snipe:latest
+docker build -t 1password2snipe:latest .
 ```
 
-**Option B — Cloud Build** (no Docker required):
-```bash
-# One-time project setup:
-gcloud services enable cloudbuild.googleapis.com --project=YOUR_PROJECT
-PROJECT_NUMBER=$(gcloud projects describe YOUR_PROJECT --format='value(projectNumber)')
-gcloud projects add-iam-policy-binding YOUR_PROJECT \
-  --member="serviceAccount:${PROJECT_NUMBER}-compute@developer.gserviceaccount.com" \
-  --role="roles/cloudbuild.builds.builder"
-gcloud projects add-iam-policy-binding YOUR_PROJECT \
-  --member="serviceAccount:${PROJECT_NUMBER}-compute@developer.gserviceaccount.com" \
-  --role="roles/artifactregistry.writer"
-gcloud projects add-iam-policy-binding YOUR_PROJECT \
-  --member="serviceAccount:${PROJECT_NUMBER}-compute@developer.gserviceaccount.com" \
-  --role="roles/logging.logWriter"
-
-# Build and push:
-gcloud builds submit \
-  --tag YOUR_REGION-docker.pkg.dev/YOUR_PROJECT/snipe-integrations/1password2snipe:latest \
-  --project=YOUR_PROJECT .
-```
-
-> These three IAM grants are required once per project. `cloudbuild.builds.builder` allows Cloud Build to read its source upload from Cloud Storage; `artifactregistry.writer` allows it to push the built image; `logging.logWriter` allows build logs to appear in Cloud Logging.
-
-See the [snipemgr README](https://github.com/jackvaughanjr/2snipe-manager#building-container-images-for-cloud-run-jobs) for full GCP setup instructions (Artifact Registry repo creation, IAM, Cloud Scheduler).
+For automated scheduling via Cloud Run Jobs, use [snipemgr](https://github.com/jackvaughanjr/2snipe-manager) — it handles image publishing, secret storage, and scheduling. See the [snipemgr README](https://github.com/jackvaughanjr/2snipe-manager#building-container-images-for-cloud-run-jobs) for complete GCP setup instructions.
 
 ---
 
